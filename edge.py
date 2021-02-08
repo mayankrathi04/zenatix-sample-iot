@@ -25,38 +25,40 @@ class Edge:
         self.buff = Queue()
         self.successCounter = Counter()
 
-    #function for simulation of sending sensor data
+    # function for simulation of sending sensor data
     def simulate(self):
         while(1):
             t1 = time.time()
             while(time.time()-t1 < 60):
                 pass
             sd = self.getRandomSensorData()
-            print("Sending sensor data:", sd)
+            print("Sending sensor data:", sd, end="")
             self.sendReq(sd)
-        
-    #function for simulation of sending buffered sensor data
+            print("Total successfull:", self.getSuccessCounter(),"Total buffered:", self.getBufferedDataCount())
+
+    # function for simulation of sending buffered sensor data
+
     def sendBufferedData(self):
         while(1):
             t1 = time.time()
             while(time.time()-t1 < 5):
                 pass
             while(not self.buff.empty()):
-                print("Sending buffered data")
+                print("Sending buffered data:", end="")
                 sd = self.buff.get()
                 self.sendReq(sd)
-                break
 
     def sendReq(self, sd):
         try:
             r = requests.post(url="http://localhost:80/publish", json=sd)
-            print("Got Response:", r.status_code, " ", r.text)
+            print(" Got Response:", r.status_code, " ", r.text)
             if(r.status_code != 200):
                 self.buff.put(sd)
             if(r.status_code == 200):
                 self.successCounter.inc()
         except Exception as e:
-            print(e)
+            print("Server Not reachable")
+            self.buff.put(sd)
 
     def getSuccessCounter(self):
         return self.successCounter.getCount()
