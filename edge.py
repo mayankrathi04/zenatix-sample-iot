@@ -34,7 +34,7 @@ class Edge:
             sd = self.getRandomSensorData()
             print("Sending sensor data:", sd, end="")
             self.sendReq(sd)
-            print("Total successfull:", self.getSuccessCounter(),"Total buffered:", self.getBufferedDataCount())
+            #print("Total successfull:", self.getSuccessCounter(),"Total buffered:", self.getBufferedDataCount())
 
     # function for simulation of sending buffered sensor data
 
